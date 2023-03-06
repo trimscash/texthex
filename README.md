@@ -13,7 +13,7 @@ and use it
 
 or
 ```
-git clone https://github.com/trimscash/texthex
+git clone https://github.com/trimscash/texthex ~
 echo "export PATH=\$PATH:\$HOME/texthex/release" >> ~/.zshrc
 source ~/.zshrc
 ```
