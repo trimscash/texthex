@@ -6,9 +6,10 @@ Read text section bytes and parse it (64bit ELF only)
 # Setup
 ```
 git clone https://github.com/trimscash/texthex
-cd texthex
-./setup.sh
+echo "export PATH=\$PATH:\$HOME/texthex/release" >> ~/.zshrc
+source ~/.zshrc
 ```
+Replace .zshrc with the one you are using
 
 # Usage
 ```
