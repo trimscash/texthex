@@ -4,9 +4,11 @@ Read text section bytes and parse it (64bit ELF only)
 
 # Setup
 ```
-git clone https://github.com/trimscash/texthex
+git clone https://github.com/trimscash/texthex ~
 cd texthex
 cargo build -r
+echo "export PATH=\$PATH:\$HOME/texthex/target/release" >> ~/.zshrc
+source ~/.zshrc
 ```
 and use it. i recommend ↑
 
