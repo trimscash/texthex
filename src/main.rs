@@ -1,6 +1,8 @@
 #![allow(unused)]
 use clap::{CommandFactory, Parser};
 use rustc_hex::ToHex;
+use std::io;
+use std::io::Write;
 use std::str;
 
 #[repr(C)]
@@ -235,6 +237,19 @@ fn print_array_shellcode(binary: &Vec<u8>) {
     println!("");
 }
 
+fn print_python_shellcode(binary: &Vec<u8>) {
+    let hex_str: String = binary.as_slice().to_hex();
+    print!("python3 -c 'import sys; sys.stdout.buffer.write(b\"");
+    for i in 0..hex_str.len() / 2 {
+        print!("\\x{}", &hex_str[i * 2..i * 2 + 2]);
+    }
+    println!("\")'");
+}
+
+fn stdout_shellcode(binary: &Vec<u8>) {
+    let mut writer = io::BufWriter::new(io::stdout());
+    writer.write_all(&binary.as_slice());
+}
 /// Read text section bytes and parse it (64bit ELF only)
 /// Without option, it just print text section bytes
 #[derive(Debug, Parser)]
@@ -247,6 +262,14 @@ struct Args {
     /// Ex: \x55\x48\x89\xe5\x48
     #[clap(long, short, action)]
     array_mode: bool,
+
+    /// Ex: python3 -c 'import sys; sys.stdout.buffer.write("\x55\x48\x89\xe5\x48")'
+    #[clap(long, short, action)]
+    python_mode: bool,
+
+    /// Direct stdout. If you choose this option, other option will be ignore.
+    #[clap(long, short, action)]
+    write_mode: bool,
 
     file: std::path::PathBuf,
 }
@@ -289,20 +312,35 @@ fn main() {
 
     let text_section = read_section(text_section_offset, text_section_size, &elf_file);
 
-    if args.string_mode && args.array_mode {
-        print_string_shellcode(&text_section);
-        println!("");
-        print_array_shellcode(&text_section);
+    if args.write_mode {
+        stdout_shellcode(&text_section);
         return;
     }
 
+    let mut arg_rem = args.array_mode as u8 + args.python_mode as u8 + args.string_mode as u8;
+
     if args.string_mode {
         print_string_shellcode(&text_section);
-        return;
+        arg_rem -= 1;
+        if arg_rem == 0 {
+            return;
+        } else {
+            println!();
+        }
     }
 
     if args.array_mode {
         print_array_shellcode(&text_section);
+        arg_rem -= 1;
+        if arg_rem == 0 {
+            return;
+        } else {
+            println!();
+        }
+    }
+
+    if args.python_mode {
+        print_python_shellcode(&text_section);
         return;
     }
 
