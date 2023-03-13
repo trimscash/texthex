@@ -250,7 +250,7 @@ fn stdout_shellcode(binary: &Vec<u8>) {
     let mut writer = io::BufWriter::new(io::stdout());
     writer.write_all(&binary.as_slice());
 }
-/// Read text section bytes and parse it (64bit ELF only)
+/// Read text section bytes and format it (64bit ELF only)
 /// Without option, it just print text section bytes
 #[derive(Debug, Parser)]
 #[clap(verbatim_doc_comment)]
