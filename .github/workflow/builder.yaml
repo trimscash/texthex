@@ -1,0 +1,38 @@
+name: auto builder
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+
+  strategy:
+    fail-fast: false
+    matrix:
+      target-os: [macos-latest, ubuntu-latest, windows-latest]
+
+  runs-on: ${{ matrix.target-os }}
+
+  outputs:
+    version: ${{ steps.version.outputs }}
+
+  steps:
+    uses: actions/checkout@v3
+  - name: install rust
+    uses: dtolnay/rust-toolchain@stable
+
+  - name: build
+    run: cargo build -r
+
+  - name: get-version
+  - id: version
+    run: echo "test=world" >> "$GITHUB_OUTPUT"
+
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      tag_name: v${{ needs.jobs.outputs.version }}
+      release_name: v${{ needs.build.outputs.version }}
+      body: download from here or see refer to the README for setup.
+      draft: true
