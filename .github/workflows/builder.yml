@@ -10,14 +10,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build-target: [x86_64-apple-darwin, x86_64-unknown-linux-gnu, x86_64-pc-windows-msvc]
+        build-target: [x86_64-apple-darwin, x86_64-unknown-linux-gnu]
         include:
           - build-target: x86_64-apple-darwin
             os: macos-latest
           - build-target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
-          - build-target: x86_64-pc-windows-msvc
-            os: windows-latest
 
     runs-on: ${{ matrix.os }}
 
@@ -69,14 +67,12 @@ jobs:
   upload:
     strategy:
       matrix:
-        build-target: [x86_64-apple-darwin, x86_64-unknown-linux-gnu, x86_64-pc-windows-msvc]
+        build-target: [x86_64-apple-darwin, x86_64-unknown-linux-gnu]
         include:
           - build-target: x86_64-apple-darwin
             os: macos-latest
           - build-target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
-          - build-target: x86_64-pc-windows-msvc
-            os: windows-latest
 
     needs: [draft]
     runs-on: ubuntu-latest
