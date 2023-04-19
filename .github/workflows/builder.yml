@@ -60,13 +60,8 @@ jobs:
         env:
           url: ${{ steps.create-draft.outputs.upload_url }}
         run: |
-          echo $url > url.txt
-      - name: save url
-        uses: actions/upload-artifact@v1
-        with:
-          name: url.txt
-          path: url.txt
-  
+          echo "url=$url" >> $GITHUB_OUTPUT
+
   upload:
     strategy:
       matrix:
@@ -84,14 +79,7 @@ jobs:
     steps: 
       - uses: actions/download-artifact@v1
         with:
-          name: url.txt
-      - name: output url e
-        id: upload_url
-        run: echo "::set-output name=url::$(cat url.txt)"
-      
-      - uses: actions/download-artifact@v1
-        with:
-          name: texthex-${{ github.ref_name }}-${{ matrix.target }}
+          name: texthex-${{ github.ref_name }}-${{ matrix.build-target }}
           path: texthex-build/
 
       - name: Upload Release Asset
@@ -100,7 +88,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.upload_url.outputs.url }}
-          asset_path: ./texthex-build/texthex-${{ github.ref_name }}-${{ matrix.target }}
-          asset_name: texthex-${{ github.ref_name }}-${{ matrix.target }}
+          upload_url: ${{ needs.draft.outputs.url }}
+          asset_path: ./texthex-build/texthex-${{ github.ref_name }}-${{ matrix.build-target }}
+          asset_name: texthex-${{ github.ref_name }}-${{ matrix.build-target }}
           asset_content_type: application/octet-stream
