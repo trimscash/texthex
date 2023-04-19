@@ -42,6 +42,9 @@ jobs:
           path: target/${{ matrix.build-target }}/release/texthex
 
   draft:
+    outputs:
+      url: ${{ steps.draft.outputs.url }}
+
     needs: [build]
     runs-on: ubuntu-latest
     steps:
