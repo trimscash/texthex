@@ -24,6 +24,12 @@ jobs:
 
       - name: build
         run: cargo build -r
+      
+  draft:
+    needs: [build-and-pub]
+    steps:
+      - name: Create a draft release
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
