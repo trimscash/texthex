@@ -43,7 +43,7 @@ jobs:
 
   draft:
     outputs:
-      url: ${{ steps.draft.outputs.url }}
+      url: ${{ steps.upload_url.outputs.url }}
 
     needs: [build]
     runs-on: ubuntu-latest
@@ -60,6 +60,7 @@ jobs:
           draft: true
 
       - name: make an env with url to upload file
+        id: upload_url
         env:
           url: ${{ steps.create-draft.outputs.upload_url }}
         run: |
