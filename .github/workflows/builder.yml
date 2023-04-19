@@ -6,35 +6,101 @@ on:
       - 'v*'
 
 jobs:
-  build-and-pub:
+  build:
     strategy:
       fail-fast: false
       matrix:
-        target-os: [macos-latest, ubuntu-latest, windows-latest]
+        build-target: [x86_64-apple-darwin, x86_64-unknown-linux-gnu, x86_64-pc-windows-msvc]
+      include:
+        - build-target: x86_64-apple-darwin
+          os: macos-latest
+        - build-target: x86_64-unknown-linux-gnu
+          os: ubuntu-latest
+        - build-target: x86_64-pc-windows-msvc
+          os: windows-latest
 
-    runs-on: ${{ matrix.target-os }}
-
-    outputs:
-      version: ${{ steps.version.outputs }}
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v3
       - name: install rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          target: ${{ matrix.build-target }}
 
-      - name: build
-        run: cargo build -r
-      
+      - uses: Swatinem/rust-cache@v1
+
+      - name: build     
+        run: cargo build --release --target=${{ matrix.build-target }}
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: texthex-${{ github.ref_name }}-${{ matrix.build-target }}
+          path: target/${{ matrix.build-target }}/release/texthex
+
   draft:
-    needs: [build-and-pub]
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - name: Create a draft release
+      - name: create a draft release
+        id: create-draft
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name:  ${{  github.ref_name }}"
-          release_name:  ${{  github.ref_name }}"
-          body: download ${{  github.ref_name }}" from here or see refer to the README for setup.
+          tag_name:  ${{ github.ref_name }}
+          release_name:  ${{ github.ref_name }}
+          body: download ${{ github.ref_name }} from here or see refer to the README for setup.
           draft: true
+
+      - name: make an env with url to upload file
+        env:
+          url: ${{ steps.create-draft.outputs.upload_url }}
+        run: |
+          echo $url > url.txt
+      - name: save url
+        uses: actions/upload-artifact@v1
+        with:
+          name: url.txt
+          path: url.txt
+  
+  upload:
+    strategy:
+      matrix:
+        build-target: [x86_64-apple-darwin, x86_64-unknown-linux-gnu, x86_64-pc-windows-msvc]
+        include:
+          - build-target: x86_64-apple-darwin
+            os: macos-latest
+          - build-target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+          - build-target: x86_64-pc-windows-msvc
+            os: windows-latest
+
+    needs: [draft]
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/download-artifact@v1
+        with:
+          name: url.txt
+      - name: output url e
+        id: upload_url
+        run: echo "::set-output name=url::$(cat url.txt)"
+      
+      - uses: actions/download-artifact@v1
+        with:
+          name: texthex-${{ github.ref_name }}-${{ matrix.target }}
+          path: texthex-build/
+
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.upload_url.outputs.url }}
+          asset_path: ./texthex-build/texthex-${{ github.ref_name }}-${{ matrix.target }}
+          asset_name: texthex-${{ github.ref_name }}-${{ matrix.target }}
+          asset_content_type: application/octet-stream
