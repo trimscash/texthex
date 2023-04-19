@@ -11,13 +11,13 @@ jobs:
       fail-fast: false
       matrix:
         build-target: [x86_64-apple-darwin, x86_64-unknown-linux-gnu, x86_64-pc-windows-msvc]
-      include:
-        - build-target: x86_64-apple-darwin
-          os: macos-latest
-        - build-target: x86_64-unknown-linux-gnu
-          os: ubuntu-latest
-        - build-target: x86_64-pc-windows-msvc
-          os: windows-latest
+        include:
+          - build-target: x86_64-apple-darwin
+            os: macos-latest
+          - build-target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+          - build-target: x86_64-pc-windows-msvc
+            os: windows-latest
 
     runs-on: ${{ matrix.os }}
 
