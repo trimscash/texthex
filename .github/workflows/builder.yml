@@ -27,6 +27,7 @@ jobs:
       
   draft:
     needs: [build-and-pub]
+    runs-on: ubuntu-latest
     steps:
       - name: Create a draft release
         uses: actions/create-release@v1
