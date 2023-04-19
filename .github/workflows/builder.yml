@@ -81,10 +81,10 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: texthex-${{ github.ref_name }}-${{ matrix.build-target }}
-          path: ~/
+          path: /home/runner
 
       - name: Display structure of downloaded files
-        run: ls -la ~
+        run: ls -la /home/runner
         
       - name: Upload Release Asset
         id: upload-release-asset 
@@ -93,6 +93,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.draft.outputs.url }}
-          asset_path: ~/texthex-${{ github.ref_name }}-${{ matrix.build-target }}
+          asset_path: /home/runner/texthex-${{ github.ref_name }}-${{ matrix.build-target }}
           asset_name: texthex-${{ github.ref_name }}-${{ matrix.build-target }}
           asset_content_type: application/octet-stream
