@@ -84,8 +84,7 @@ jobs:
           path: ~/
 
       - name: Display structure of downloaded files
-        run: ls -la
-        working-directory: ~/
+        run: ls -la ~
         
       - name: Upload Release Asset
         id: upload-release-asset 
