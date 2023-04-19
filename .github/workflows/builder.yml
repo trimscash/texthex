@@ -92,6 +92,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.draft.outputs.url }}
-          asset_path: ./texthex-${{ github.ref_name }}-${{ matrix.build-target }}
+          asset_path: ./texthex
           asset_name: texthex-${{ github.ref_name }}-${{ matrix.build-target }}
           asset_content_type: application/octet-stream
