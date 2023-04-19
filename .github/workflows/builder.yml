@@ -84,7 +84,8 @@ jobs:
           path: /home/runner
 
       - name: Display structure of downloaded files
-        run: ls -la /home/runner
+        run: ls -la 
+        working-directory: /home/runner
         
       - name: Upload Release Asset
         id: upload-release-asset 
@@ -93,6 +94,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.draft.outputs.url }}
-          asset_path: /home/runner/texthex-${{ github.ref_name }}-${{ matrix.build-target }}
+          asset_path: /home/runner/
           asset_name: texthex-${{ github.ref_name }}-${{ matrix.build-target }}
           asset_content_type: application/octet-stream
