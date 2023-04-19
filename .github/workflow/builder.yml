@@ -1,8 +1,8 @@
 name: auto builder
 on:
   push:
-    branches:
-      - release
+    tags:
+      - 'v*'
 
 jobs:
 
@@ -24,15 +24,10 @@ jobs:
   - name: build
     run: cargo build -r
 
-  - name: get-version
-  - id: version
-    run: echo "test=world" >> "$GITHUB_OUTPUT"
-
-
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     with:
-      tag_name: v${{ needs.jobs.outputs.version }}
-      release_name: v${{ needs.build.outputs.version }}
-      body: download from here or see refer to the README for setup.
+      tag_name:  ${{  github.ref_name }}"
+      release_name:  ${{  github.ref_name }}"
+      body: download ${{  github.ref_name }}" from here or see refer to the README for setup.
       draft: true
