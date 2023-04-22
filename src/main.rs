@@ -69,7 +69,7 @@ struct Args {
     #[clap(long, short, action)]
     array_mode: bool,
 
-    /// Ex: python3 -c 'import sys; sys.stdout.buffer.write("\x55\x48\x89\xe5\x48")'
+    /// Ex: python3 -c 'import sys; sys.stdout.buffer.write(b"\x55\x48\x89\xe5\x48")'
     #[clap(long, short, action)]
     python_mode: bool,
 
