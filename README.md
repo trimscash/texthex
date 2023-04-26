@@ -10,14 +10,7 @@ cargo build -r
 echo "export PATH=\$PATH:\$HOME/texthex/target/release" >> ~/.zshrc
 source ~/.zshrc
 ```
-and use it. i recommend ↑
-
-or
-```
-git clone https://github.com/trimscash/texthex ~
-echo "export PATH=\$PATH:\$HOME/texthex/release" >> ~/.zshrc
-source ~/.zshrc
-```
+and use it. 
 Replace .zshrc with the one you are using
 
 # Usage
