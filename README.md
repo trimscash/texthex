@@ -15,7 +15,7 @@ Replace .zshrc with the one you are using
 
 # Usage
 ```
-Read text section bytes and parse it (64bit ELF only)
+Read text section bytes and format it (64bit ELF only)
 Without option, it just print text section bytes
 
 Usage: texthex [OPTIONS] <FILE>
@@ -24,9 +24,9 @@ Arguments:
   <FILE>
 
 Options:
-  -s, --string-mode  Ex: 0x55, 0x48, 0x89, 0xe5, 0x48
-  -a, --array-mode   Ex: \x55\x48\x89\xe5\x48
-  -p, --python-mode  Ex: python3 -c 'import sys; sys.stdout.buffer.write("\x55\x48\x89\xe5\x48")'
+  -s, --string-mode  Ex: \x55\x48\x89\xe5\x48
+  -a, --array-mode   Ex: 0x55, 0x48, 0x89, 0xe5, 0x48
+  -p, --python-mode  Ex: python3 -c 'import sys; sys.stdout.buffer.write(b"\x55\x48\x89\xe5\x48")'
   -w, --write-mode   Direct stdout. If you choose this option, other option will be ignore
   -h, --help         Print help
 ```

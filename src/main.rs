@@ -61,11 +61,11 @@ fn stdout_shellcode(binary: &Vec<u8>) {
 #[derive(Debug, Parser)]
 #[clap(verbatim_doc_comment)]
 struct Args {
-    /// Ex: 0x55, 0x48, 0x89, 0xe5, 0x48
+    /// Ex: \x55\x48\x89\xe5\x48
     #[clap(long, short, action)]
     string_mode: bool,
 
-    /// Ex: \x55\x48\x89\xe5\x48
+    /// Ex: 0x55, 0x48, 0x89, 0xe5, 0x48
     #[clap(long, short, action)]
     array_mode: bool,
 
